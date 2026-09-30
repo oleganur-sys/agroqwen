@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бесплатная диагностика ГИС за 2 минуты — АгроОтдел</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.qwrap{max-width:760px;margin:50px auto;padding:0 20px}
+.qbar{height:6px;background:#e6e3da;border-radius:999px;margin-bottom:26px}
+.qbar i{display:block;height:100%;background:var(--yellow);border-radius:999px;transition:width .3s}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:34px}
+.qcard h2{font-size:22px;margin-bottom:6px}
+.qhint{color:var(--muted);font-size:14px;margin-bottom:22px}
+.opts{display:grid;gap:10px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;font-size:15px;background:#fbfaf7;transition:.15s;user-select:none}
+.opt:hover{border-color:#c9c5b8}
+.opt.sel{background:var(--green);color:#fff;border-color:var(--green)}
+.qbtns{display:flex;justify-content:space-between;margin-top:24px;gap:12px}
+.qbtns .btn{padding:10px 18px}
+.qform label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}
+.qform input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fbfaf7}
+.r-head{background:var(--green);border-radius:16px;padding:28px;color:#fff;margin-bottom:18px}
+.r-head h2{color:#fff;font-size:24px}
+.r-head p{color:#b9cdc2;font-size:14px;margin-top:8px}
+.r-block{margin-bottom:16px}
+.r-block h3{font-size:16px;margin-bottom:10px}
+.sys-row{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:10px}
+.sys-row .ic{flex-shrink:0}
+.sys-row b{font-size:15px}
+.sys-row small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+.risk{background:#fff6e6;border:1px solid #f0d9a8;border-radius:12px;padding:16px;font-size:14px;margin-bottom:10px}
+.risk b{color:#8a5b00}
+.urg{display:inline-block;border-radius:999px;padding:5px 14px;font-size:12px;font-weight:700}
+.urg.hot{background:#fdecec;color:#b3261e}
+.urg.warm{background:#fff6e6;color:#8a5b00}
+.urg.cold{background:#e8f4ec;color:#1b6e3c}
+.r-note{color:var(--muted);font-size:12.5px;margin-top:18px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container header-in">
+    <a class="logo" href="index.html"><span class="logo-ic">🌾</span> АгроОтдел</a>
+    <nav class="nav"><a href="index.html#prices">Цены</a><a href="index.html#faq">Вопросы</a></nav>
+    <a href="index.html#lead" class="btn btn-yellow">Оставить заявку</a>
+  </div>
+</header>
+
+<div class="qwrap">
+  <div id="quiz">
+    <div class="qbar"><i id="qprog" style="width:0%"></i></div>
+    <div class="qcard" id="qbody"></div>
+  </div>
+  <div id="result" style="display:none"></div>
+</div>
+
+<footer class="footer">
+  <div class="container copy">© 2026 АгроОтдел · Информация не является публичной офертой</div>
+</footer>
+
+<script src="js/quiz.js"></script>
+</body>
+</html>
