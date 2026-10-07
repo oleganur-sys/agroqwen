@@ -41,7 +41,7 @@ const Q_TRACKS = { id:'tracks', t:'Что диагностируем?', hint:'В
 
 const TRACK_QUESTIONS = {
   'ГИС и отчётность': [
-    { id:'activities', t:'Чем занимается хозяйство?', hint:'Выберите все подходящие варианты', multi:true, opts:['Выращиваем зерно','Производим / продаём семена','Применяем пестициды и агрохимикаты','Животноводство','Только начинаем / не знаю'] },
+    { id:'activities', t:'Чем занимается хозяйство?', hint:'Выберите все подходящие варианты', multi:true, opts:['Выращиваем зерно','Производим / продаём семена','Применяем пестициды и агрохимикаты','Только начинаем / не знаю'] },
     { id:'gisNow', t:'Сколько систем уже ведёте?', multi:false, opts:['Не ведём','1–2','3–4','5+'] },
     { id:'gisFines', t:'Были ли штрафы или отказы из-за ГИС за последний год?', multi:false, opts:['Да','Нет','Не знаю'] }
   ],
@@ -127,7 +127,7 @@ function gisMandatory() {
   if (has('Выращиваем зерно')) mand.add('zerno');
   if (has('Производим / продаём семена')) mand.add('semena');
   if (has('Применяем пестициды и агрохимикаты')) mand.add('saturn');
-  if (mand.size || has('Животноводство') || has('Только начинаем / не знаю')) mand.add('zsn');
+  if (mand.size || has('Только начинаем / не знаю')) mand.add('zsn');
   if (!mand.size) mand.add('zsn');
   return [...mand];
 }
@@ -207,7 +207,6 @@ function finish() {
     html += '<div class="r-block"><h3>Что дальше</h3><div class="sys-row"><div class="ic">📞</div><div>Вы не выбрали направления — эксперт на бесплатной диагностике поможет определить, что именно нужно вашему хозяйству.</div></div></div>';
   }
 
-  // Сводный план действий
   const plan = [];
   if (tracks.includes('ГИС и отчётность')) plan.push('Закрыть просрочки по обязательным ГИС: ' + (mandNames || 'список уточним'));
   if (tracks.includes('Подготовка к проверкам')) plan.push('Подготовить документы к проверке и устранить нарушения');
@@ -220,6 +219,10 @@ function finish() {
   html += '<div class="r-block"><h3>План действий</h3>' + plan.slice(0, 4).map((s, i) =>
     '<div class="sys-row"><div class="ic">' + (i + 1) + '</div><div>' + s + '</div></div>').join('') + '</div>';
 
+  // Кнопка PDF появляется только если подключена библиотека html2pdf в diagnostika.html
+  if (window.html2pdf) {
+    html += '<div class="qbtns"><button class="btn btn-ghost" id="dlpdf">⬇ Скачать PDF</button></div>';
+  }
   html += '<div class="qbtns"><a class="btn btn-yellow" href="index.html#lead">Обсудить отчёт с экспертом →</a><a class="btn btn-ghost" href="diagnostika.html">Пройти ещё раз</a></div>' +
     '<p class="r-note">Отчёт предварительный и не является юридическим заключением.</p>';
 
@@ -228,6 +231,14 @@ function finish() {
   res.style.display = 'block';
   res.innerHTML = html;
   prog.style.width = '100%';
+
+  const dl = document.getElementById('dlpdf');
+  if (dl) dl.addEventListener('click', () => {
+    const hides = res.querySelectorAll('.qbtns');
+    hides.forEach(b => b.style.display = 'none');
+    html2pdf().set({ margin: 8, filename: 'АгроОтдел_отчёт.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } })
+      .from(res).save().then(() => hides.forEach(b => b.style.display = ''));
+  });
 
   const details = queue.slice(2).map(q => q.t + ' — ' + fmt(state[q.id])).join('; ');
   fetch(WEB_APP_URL, {

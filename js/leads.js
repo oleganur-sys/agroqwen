@@ -1,6 +1,5 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxqqQDf9RGzeIVYcGDQciitvmC-_pPcRhGON_W5mtfApmL4yr-j4983oq-7qR8sHsp_WA/exec';
 
-// Сбор данных строго ВНУТРИ той формы, которая отправляется
 function leadCollect(form) {
   const inForm = (sels) => {
     for (const s of sels) {
@@ -9,7 +8,6 @@ function leadCollect(form) {
     }
     return '';
   };
-
   const name  = inForm(['[name="name"]', 'input[placeholder*="имя" i]', 'input[placeholder*="должность" i]', 'input[type="text"]']);
   const phone = inForm(['[name="phone"]', 'input[type="tel"]', 'input[placeholder*="телефон" i]', 'input[placeholder*="+7"]']);
   const email = inForm(['[name="email"]', 'input[type="email"]', 'input[placeholder*="mail" i]']);
@@ -29,14 +27,12 @@ function leadCollect(form) {
       .map(b => b.textContent.trim()).join(', ');
   }
 
-  // Чекбокс согласия ищем только внутри этой формы
   const agreeBox = [...form.querySelectorAll('input[type="checkbox"]')]
     .find(c => c.closest('label') && /персональн/i.test(c.closest('label').textContent));
 
   return { name, phone, email, org, who: whoEl ? whoEl.value : '', interest, message: msg, agreeBox };
 }
 
-// Диагностика: в консоли ввести leadDebug() и прислать скрин
 window.leadDebug = () => {
   const form = document.getElementById('lead-form') || document.querySelector('form');
   const d = leadCollect(form);
@@ -47,13 +43,11 @@ window.leadDebug = () => {
 document.addEventListener('submit', async (e) => {
   const form = e.target;
   if (!form || form.tagName !== 'FORM') return;
-  // Работаем только с лид-формой: по id или по наличию поля телефона
   if (!(form.id === 'lead-form' || form.querySelector('input[type="tel"]'))) return;
 
   e.preventDefault();
   const d = leadCollect(form);
 
-  // ОШИБКИ: форма НЕ очищается, просто выходим
   if (d.agreeBox && !d.agreeBox.checked) {
     alert('Отметьте согласие на обработку персональных данных.');
     return;
@@ -78,16 +72,16 @@ document.addEventListener('submit', async (e) => {
         who: d.who, interest: d.interest, message: d.message, source: location.href
       })
     });
-    // УСПЕХ: только теперь очищаем
-      form.reset();
-      btn.textContent = 'Заявка отправлена ✓';
-      let xs = document.getElementById('xsell');
-      if (!xs) {
-        xs = document.createElement('div'); xs.id = 'xsell';
-        xs.style.cssText = 'margin-top:12px;font-size:13px;color:#6d736d;text-align:center';
-        form.appendChild(xs);
-      }
-      xs.innerHTML = 'Пока обрабатываем заявку — пройдите <a href="diagnostika.html" style="color:#12352b;font-weight:600">бесплатную диагностику за 2 минуты</a>.';    setTimeout(() => { btn.textContent = oldText; btn.disabled = false; }, 4000);
+    form.reset();
+    btn.textContent = 'Заявка отправлена ✓';
+    let xs = document.getElementById('xsell');
+    if (!xs) {
+      xs = document.createElement('div'); xs.id = 'xsell';
+      xs.style.cssText = 'margin-top:12px;font-size:13px;color:#6d736d;text-align:center';
+      form.appendChild(xs);
+    }
+    xs.innerHTML = 'Пока обрабатываем заявку — пройдите <a href="diagnostika.html" style="color:#12352b;font-weight:600">бесплатную диагностику за 2 минуты</a>.';
+    setTimeout(() => { btn.textContent = oldText; btn.disabled = false; }, 4000);
   } catch (err) {
     alert('Ошибка сети. Попробуйте ещё раз или позвоните нам.');
     btn.disabled = false;
