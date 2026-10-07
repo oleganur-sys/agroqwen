@@ -114,7 +114,8 @@ function renderContacts() {
     '<label>Телефон *</label><input id="c-phone" type="tel" placeholder="+7 (___) ___-__-__">' +
     '<label>E-mail</label><input id="c-email" type="email" placeholder="для полного отчёта">' +
     '<label>Организация / ИНН</label><input id="c-org" placeholder="необязательно">' +
-    '<label>Ситуация своими словами (необязательно)</label><textarea id="c-custom" style="width:100%;min-height:80px;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fbfaf7" placeholder="Опишите задачу в свободной форме — если не подходит ни один вариант, мы разберём её вручную"></textarea></div>' +
+    '<label>Ситуация своими словами (необязательно)</label><textarea id="c-custom" style="width:100%;min-height:80px;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fbfaf7" placeholder="Опишите задачу в свободной форме — если не подходит ни один вариант, мы разберём её вручную"></textarea>' +
+    '<label class="agree" style="margin-top:14px"><input type="checkbox" id="c-agree"> Согласен на обработку персональных данных</label></div>' +
     '<div class="qbtns"><button class="btn btn-ghost" id="qback">← Назад</button><button class="btn btn-yellow" id="qfin">Получить отчёт →</button></div>';
   document.getElementById('qback').addEventListener('click', () => { step = queue.length - 1; render(); });
   document.getElementById('qfin').addEventListener('click', finish);
@@ -155,6 +156,8 @@ function finish() {
   const name = document.getElementById('c-name').value.trim();
   const phone = document.getElementById('c-phone').value.trim();
   if (!name || !phone) { alert('Заполните имя и телефон — иначе не сможем отправить отчёт.'); return; }
+  const agree = document.getElementById('c-agree');
+  if (agree && !agree.checked) { alert('Отметьте согласие на обработку персональных данных.'); return; }
 
   const tracks = state.tracks || [];
   const urg = calcUrgency();
