@@ -115,7 +115,7 @@ function renderContacts() {
     '<label>E-mail</label><input id="c-email" type="email" placeholder="для полного отчёта">' +
     '<label>Организация / ИНН</label><input id="c-org" placeholder="необязательно">' +
     '<label>Ситуация своими словами (необязательно)</label><textarea id="c-custom" style="width:100%;min-height:80px;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fbfaf7" placeholder="Опишите задачу в свободной форме — если не подходит ни один вариант, мы разберём её вручную"></textarea>' +
-    '<label class="agree" style="margin-top:14px"><input type="checkbox" id="c-agree"> Согласен на обработку персональных данных</label></div>' +
+    '<label class="agree" style="margin-top:14px"><input type="checkbox" id="c-agree"> Согласен на обработку <a href="policy.html" target="_blank" style="color:inherit;text-decoration:underline">персональных данных</a></label></div>' +
     '<div class="qbtns"><button class="btn btn-ghost" id="qback">← Назад</button><button class="btn btn-yellow" id="qfin">Получить отчёт →</button></div>';
   document.getElementById('qback').addEventListener('click', () => { step = queue.length - 1; render(); });
   document.getElementById('qfin').addEventListener('click', finish);
