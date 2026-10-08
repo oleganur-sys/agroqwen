@@ -225,7 +225,7 @@ function finish() {
     html += '<div class="qbtns"><button class="btn btn-ghost" id="dlpdf">⬇ Скачать PDF</button></div>';
   }
   html += '<div class="qbtns"><a class="btn btn-yellow" href="index.html#lead">Обсудить отчёт с экспертом →</a><a class="btn btn-ghost" href="diagnostika.html">Пройти ещё раз</a></div>' +
-    '<p class="r-note">Отчёт предварительный и не является юридическим заключением.</p>';
+    '<p class="r-note">Отчёт предварительный и не является юридическим заключением. · ЗемОтдел · ИП Андреева О.В.</p>';
 
   document.getElementById('quiz').style.display = 'none';
   const res = document.getElementById('result');
@@ -237,7 +237,7 @@ function finish() {
   if (dl) dl.addEventListener('click', () => {
     const hides = res.querySelectorAll('.qbtns');
     hides.forEach(b => b.style.display = 'none');
-    html2pdf().set({ margin: 8, filename: 'АгроОтдел_отчёт.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } })
+    html2pdf().set({ margin: 8, filename: 'ЗемОтдел_отчёт.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } })
       .from(res).save().then(() => hides.forEach(b => b.style.display = ''));
   });
 
