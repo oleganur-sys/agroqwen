@@ -1,13 +1,14 @@
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxqqQDf9RGzeIVYcGDQciitvmC-_pPcRhGON_W5mtfApmL4yr-j4983oq-7qR8sHsp_WA/exec';
+const WEB_APP_URL = 'https://zemotdel.online/api/lead.php';
 
 const SYS = {
-  zerno:   { n:'ФГИС «Зерно»',        d:'партии, качество, хранение и перемещение зерна', dl:'регистрация партии — в течение 3 дней после сбора', f:'50 000–100 000 ₽ для юрлица', law:'ст. 10.12 КоАП РФ', price:'ведение от 15 000 ₽/мес, аудит и настройка от 15 000 ₽' },
-  zsn:     { n:'ЕФГИС ЗСН',           d:'карта сельхозземель: посевы, урожай, использование', dl:'посевы — до 1 июля; урожай — до 1 декабря', f:'100 000–200 000 ₽ для юрлица', law:'ст. 8.8 КоАП РФ', price:'ведение от 15 000 ₽/мес, аудит и настройка от 15 000 ₽' },
-  saturn:  { n:'ФГИС «Сатурн»',       d:'учёт пестицидов и агрохимикатов', dl:'в течение суток после каждой обработки', f:'100 000–250 000 ₽ для юрлица', law:'ст. 8.3 КоАП РФ', price:'ведение от 15 000 ₽/мес, аудит и настройка от 15 000 ₽' },
-  semena:  { n:'ФГИС «Семеноводство»',d:'учёт партий семян от производства до реализации', dl:'до реализации каждой партии', f:'20 000–50 000 ₽ для юрлица', law:'ст. 10.12 КоАП РФ', price:'ведение от 15 000 ₽/мес, аудит и настройка от 15 000 ₽' },
-  subsidii:{ n:'АИС «Субсидии АПК»',  d:'заявки и отчётность по господдержке', dl:'окна приёма заявок — по календарю региона', f:'отказ в субсидии без корректных ГИС', law:'регламенты Минсельхоза', price:'от 25 000 ₽ или 5–10% от привлечённой суммы' },
+  zerno:   { n:'ФГИС «Зерно»',        d:'партии, качество, хранение и перемещение зерна', dl:'урожай — не позднее 5 дней после уборки; СДИЗ — в день перехода права собственности', f:'5 000–10 000 ₽ для юрлица', law:'ст. 10.3 КоАП РФ', price:'ведение одной ФГИС от 1 000 ₽/мес, все 4 системы от 5 000 ₽/мес' },
+  zsn:     { n:'ЕФГИС ЗСН',           d:'карта сельхозземель: посевы, урожай, использование', dl:'сведения — в течение 30 календарных дней с даты возникновения или изменения', f:'100 000–200 000 ₽ для юрлица', law:'ст. 8.8 КоАП РФ', price:'ведение одной ФГИС от 1 000 ₽/мес, все 4 системы от 5 000 ₽/мес' },
+  saturn:  { n:'ФГИС «Сатурн»',       d:'учёт пестицидов и агрохимикатов', dl:'приём и перемещение — 3 рабочих дня; акт применения — 3 рабочих дня; план — за 5–10 дней до обработки', f:'10 000–100 000 ₽ для юрлица', law:'ст. 8.3 КоАП РФ', price:'ведение одной ФГИС от 1 000 ₽/мес, все 4 системы от 5 000 ₽/мес' },
+  semena:  { n:'ФГИС «Семеноводство»',d:'учёт партий семян от производства до реализации', dl:'сделки и производство — 10 календарных дней; посев — 5 дней; апробация — 5–10 дней', f:'5 000–10 000 ₽ для юрлица', law:'ст. 10.12 КоАП РФ', price:'ведение одной ФГИС от 1 000 ₽/мес, все 4 системы от 5 000 ₽/мес' },
+  subsidii:{ n:'АИС «Субсидии АПК»',  d:'заявки и отчётность по господдержке', dl:'окна приёма заявок — по календарю региона', f:'отказ в субсидии без корректных ГИС', law:'регламенты Минсельхоза', price:'подготовка пакета документов для субсидии от 5 000 ₽' },
   ecp:     { n:'ЕЦП АПК',             d:'«одно окно» и личный кабинет товаропроизводителя', dl:'часть данных подгружается автоматически', f:'—', law:'—', price:'—' }
 };
+const SYS_ICON = { zerno:'🌾', zsn:'🗺️', saturn:'🍃', semena:'🌱', subsidii:'💰', ecp:'🖥️' };
 
 const KB = {
   landRisks: {
@@ -17,18 +18,18 @@ const KB = {
     'Смешанная':'Часть задач по каждому статусу. Начнём с аудита: что оформлено, что нет, где риски.',
     'Не оформлены':'Использование земли без документов — штрафы по ст. 8.8 КоАП РФ и риск изъятия участка.'
   },
-  landPrices:'Ориентиры: оформление паёв от 15 000 ₽, изменение ВРИ от 30 000 ₽, консультация от 3 000 ₽.',
+  landPrices:'Ориентиры: выдел земельной доли от 5 000 ₽, перевод категории / изменение ВРИ от 10 000 ₽, проверка документов участка от 3 000 ₽, консультация от 500 ₽.',
   auctionNote:'На торгах банкротов и залоговых аукционах земля, недвижимость и техника уходят за 30–70% от рынка. Главный риск — обременения и дефекты документов: лот проверяется до подачи заявки.',
   auctionSteps:['Мониторинг торгов под ваши критерии','Проверка документов лота и подача заявки','Участие и сопровождение до подписания договора'],
-  auctionPrice:'Ориентир: от 30 000 ₽ за проект.',
+  auctionPrice:'Ориентир: стоимость проекта — по согласованию после проверки документов лота.',
   subRefused:'Отказ в субсидии чаще всего происходит из-за ошибок в данных ГИС или неполного комплекта документов. Это устранимо: находим причину и подаём заявку повторно.',
   subNone:'Большинство хозяйств одновременно подходят под 2–4 программы поддержки: погектарная, техника, льготные кредиты. Подбор — бесплатно при диагностике.',
   subDeadline:'Важно: заявки принимаются только при корректных данных в ЕФГИС ЗСН и профильных ГИС.',
-  subPrice:'Ориентир: от 25 000 ₽ или 5–10% от привлечённой суммы.',
+  subPrice:'Ориентир: подготовка пакета документов для субсидии от 5 000 ₽.',
   auditPlanned:'Проверка назначена — это лучший сценарий: есть время устранить нарушения до визита. После акта — дороже и часто невозможно.',
   auditPast:'Прошлые штрафы и предписания означают системный пробел. Проверим, сняты ли они, и исключим повторные санкции (двойные штрафы).',
   auditNone:'Даже без назначенной проверки аудит полезен: прокуратура и Россельхознадзор приходят «внезапно». Подготовка сводит штрафы к нулю.',
-  auditPrice:'Ориентир: от 20 000 ₽ разово.',
+  auditPrice:'Ориентир: проверка документов перед подачей от 500 ₽, комплексная подготовка к проверке — по согласованию.',
   b2bOffer:'ГИС-направление под вашей маркой: берём агро-клиентов на себя по ГИС, земле и субсидиям. Агентская цена от 8 000 ₽/мес за клиента, регламенты и обучение сотрудников включены.'
 };
 
@@ -110,11 +111,11 @@ function renderQuestion() {
 
 function renderContacts() {
   body.innerHTML = '<h2>Куда отправить отчёт?</h2><p class="qhint">Краткая версия появится сразу. Нестандартные ситуации разбирает эксперт вручную — бесплатно.</p>' +
-    '<div class="qform"><label>Имя *</label><input id="c-name" placeholder="Ваше имя">' +
-    '<label>Телефон *</label><input id="c-phone" type="tel" placeholder="+7 (___) ___-__-__">' +
-    '<label>E-mail</label><input id="c-email" type="email" placeholder="для полного отчёта">' +
-    '<label>Организация / ИНН</label><input id="c-org" placeholder="необязательно">' +
-    '<label>Ситуация своими словами (необязательно)</label><textarea id="c-custom" style="width:100%;min-height:80px;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fbfaf7" placeholder="Опишите задачу в свободной форме — если не подходит ни один вариант, мы разберём её вручную"></textarea>' +
+    '<div class="qform"><label for="c-name">Имя *</label><input id="c-name" name="name" autocomplete="name" placeholder="Ваше имя">' +
+    '<label for="c-phone">Телефон *</label><input id="c-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__">' +
+    '<label for="c-email">E-mail</label><input id="c-email" name="email" type="email" autocomplete="email" placeholder="для полного отчёта">' +
+    '<label for="c-org">Организация / ИНН</label><input id="c-org" name="org" autocomplete="organization" placeholder="необязательно">' +
+    '<label for="c-custom">Ситуация своими словами (необязательно)</label><textarea id="c-custom" style="width:100%;min-height:80px;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fbfaf7" placeholder="Опишите задачу в свободной форме — если не подходит ни один вариант, мы разберём её вручную"></textarea>' +
     '<label class="agree" style="margin-top:14px"><input type="checkbox" id="c-agree"> Согласен на обработку <a href="policy.html" target="_blank" style="color:inherit;text-decoration:underline">персональных данных</a></label></div>' +
     '<div class="qbtns"><button class="btn btn-ghost" id="qback">← Назад</button><button class="btn btn-yellow" id="qfin">Получить отчёт →</button></div>';
   document.getElementById('qback').addEventListener('click', () => { step = queue.length - 1; render(); });
@@ -165,11 +166,18 @@ function finish() {
   const mandNames = mand.map(k => SYS[k].n).join(', ');
   const custom = document.getElementById('c-custom').value.trim();
 
-  let html = '<div class="r-head"><h2>' + name + ', ваш отчёт готов</h2><p>Данные зафиксированы: эксперт дополнит отчёт календарём на год и расчётом под ваш случай. Ниже — главное.</p><span class="urg ' + urg + '">' + ({hot:'Высокая срочность',warm:'Средняя срочность',cold:'Плановый режим'})[urg] + '</span></div>';
+  let html = '<div class="pdf-header">'
+    + '<img src="img/logo.png" alt="ЗемОтдел" class="pdf-logo-img">'
+    + '<div class="pdf-contacts">'
+    +   '<span class="pdf-contacts-main">+7 929 785 61 51 · info@zemotdel.ru · zemotdel.ru</span>'
+    +   '<span class="pdf-msgs">' + (window.zqm ? zqm.buttonsRow() : '') + '</span>'
+    +   '<span class="zq-pdfqr">' + (window.zqm ? zqm.qrRow() : '') + '</span>'
+    + '</div></div>';
+  html += '<div class="r-head"><h2>' + name + ', ваш отчёт готов</h2><p>Данные зафиксированы: эксперт дополнит отчёт календарём на год и расчётом под ваш случай. Ниже — главное.</p><span class="urg ' + urg + '">' + ({hot:'Высокая срочность',warm:'Средняя срочность',cold:'Плановый режим'})[urg] + '</span></div>';
 
   if (tracks.includes('ГИС и отчётность')) {
     html += '<div class="r-block"><h3>ГИС: ваши обязательные системы</h3>' + mand.map(k =>
-      '<div class="sys-row"><div class="ic">🗂</div><div><b>' + SYS[k].n + '</b><small>' + SYS[k].d + ' · Срок: ' + SYS[k].dl + '</small></div></div>').join('') +
+      '<div class="sys-row"><div class="ic">' + (SYS_ICON[k] || '📊') + '</div><div><b>' + SYS[k].n + '</b><small>' + SYS[k].d + ' · Срок: ' + SYS[k].dl + '</small></div></div>').join('') +
       '<div class="risk"><b>' + nearestDeadline(mand) + '</b></div>' +
       mand.filter(k => SYS[k].f !== '—').map(k => '<div class="risk">Просрочка в <b>' + SYS[k].n + '</b>: ' + SYS[k].f + ' (' + SYS[k].law + ')</div>').join('') +
       '<div class="sys-row"><div class="ic">₽</div><div>' + SYS.zsn.price + '</div></div></div>';
@@ -203,10 +211,10 @@ function finish() {
       '<div class="sys-row"><div class="ic">🤝</div><div>Ваши запросы: ' + fmt(state.b2bNeed) + ' · Агро-клиентов: ' + (state.b2bClients || '—') + '</div></div></div>';
   }
   if (tracks.includes('Нестандартная ситуация') || custom) {
-    html += '<div class="r-block"><h3>Нестандартная ситуация</h3><div class="sys-row"><div class="ic">✍</div><div>Ваша ситуация зафиксирована и передана эксперту. Разберём вручную и предложим решение — это бесплатно и ни к чему не обязывает.</div></div></div>';
+    html += '<div class="r-block"><h3>Нестандартная ситуация</h3><div class="sys-row"><div class="ic">✍️</div><div>Ваша ситуация зафиксирована и передана эксперту. Разберём вручную и предложим решение — это бесплатно и ни к чему не обязывает.</div></div></div>';
   }
   if (!tracks.length) {
-    html += '<div class="r-block"><h3>Что дальше</h3><div class="sys-row"><div class="ic">📞</div><div>Вы не выбрали направления — эксперт на бесплатной диагностике поможет определить, что именно нужно вашему хозяйству.</div></div></div>';
+    html += '<div class="r-block"><h3>Что дальше</h3><div class="sys-row"><div class="ic">💡</div><div>Вы не выбрали направления — эксперт на бесплатной диагностике поможет определить, что именно нужно вашему хозяйству.</div></div></div>';
   }
 
   const plan = [];
@@ -221,29 +229,46 @@ function finish() {
   html += '<div class="r-block"><h3>План действий</h3>' + plan.slice(0, 4).map((s, i) =>
     '<div class="sys-row"><div class="ic">' + (i + 1) + '</div><div>' + s + '</div></div>').join('') + '</div>';
 
+  html += '<div class="qbtns"><a class="btn btn-yellow" href="index.html#lead">Обсудить отчёт с экспертом →</a><a class="btn btn-ghost" href="diagnostika.html">Пройти ещё раз</a></div>';
   if (window.html2pdf) {
-    html += '<div class="qbtns"><button class="btn btn-ghost" id="dlpdf">⬇ Скачать PDF</button></div>';
+    html += '<div class="qbtns" id="dlpdf-wrap"><button class="btn btn-ghost" id="dlpdf">⬇ Скачать PDF</button></div>';
   }
-  html += '<div class="qbtns"><a class="btn btn-yellow" href="index.html#lead">Обсудить отчёт с экспертом →</a><a class="btn btn-ghost" href="diagnostika.html">Пройти ещё раз</a></div>' +
-    '<p class="r-note">Отчёт предварительный и не является юридическим заключением. · ЗемОтдел · ИП Андреева О.В.</p>';
+  html += '<p class="r-note">Отчёт предварительный и не является официальным юридическим заключением. · ЗемОтдел (zemotdel.ru)</p>';
 
   document.getElementById('quiz').style.display = 'none';
   const res = document.getElementById('result');
   res.style.display = 'block';
   res.innerHTML = html;
+  if (window.zqm) zqm.paintQrs(res);
   prog.style.width = '100%';
 
   const dl = document.getElementById('dlpdf');
-  if (dl) dl.addEventListener('click', () => {
-    const hides = res.querySelectorAll('.qbtns');
-    hides.forEach(b => b.style.display = 'none');
-    html2pdf().set({ margin: 8, filename: 'ЗемОтдел_отчёт.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } })
-      .from(res).save().then(() => hides.forEach(b => b.style.display = ''));
+  if (dl) dl.addEventListener('click', async () => {
+    const btnWrap = document.getElementById('dlpdf-wrap');
+    if (btnWrap) btnWrap.style.display = 'none';
+    res.classList.add('pdf-mode');
+    if (window.zqm) { try { await zqm.rasterizeForPrint(res); } catch(e){} }
+
+    try {
+      await html2pdf().set({
+        margin: [10, 10, 14, 10],
+        filename: 'ЗемОтдел_отчёт.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true, logging: false, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'] }
+      }).from(res).save();
+    } catch (err) {
+      alert('Ошибка при создании PDF. Попробуйте ещё раз.');
+    } finally {
+      res.classList.remove('pdf-mode');
+      if (btnWrap) btnWrap.style.display = '';
+    }
   });
 
   const details = queue.slice(2).map(q => q.t + ' — ' + fmt(state[q.id])).join('; ');
   fetch(WEB_APP_URL, {
-    method: 'POST', mode: 'no-cors',
+    method: 'POST', mode: 'cors',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
       quiz: true, name, phone,
@@ -253,7 +278,14 @@ function finish() {
       urgency: urg, mandatory: mandNames, details, custom,
       source: location.href
     })
-  }).catch(() => {});
+  }).then(function(res){
+    if (res && !res.ok) {
+      console.warn('lead.php вернул ошибку', res.status);
+      alert('Внимание: заявка могла не сохраниться на сервере. Пожалуйста, позвоните +7 929 785 61 51 — мы зафиксируем её вручную.');
+    }
+  }).catch(function(){
+    alert('Внимание: нет связи с сервером. Заявка могла не сохраниться. Пожалуйста, позвоните +7 929 785 61 51.');
+  });
 }
 
 render();

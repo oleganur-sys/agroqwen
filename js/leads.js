@@ -1,5 +1,5 @@
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxqqQDf9RGzeIVYcGDQciitvmC-_pPcRhGON_W5mtfApmL4yr-j4983oq-7qR8sHsp_WA/exec';
-
+const WEB_APP_URL = 'https://zemotdel.online/api/lead.php';
+   
 function leadCollect(form) {
   const inForm = (sels) => {
     for (const s of sels) {
@@ -63,15 +63,19 @@ document.addEventListener('submit', async (e) => {
   btn.textContent = 'Отправляем...';
 
   try {
-    await fetch(WEB_APP_URL, {
+    const res = await fetch(WEB_APP_URL, {
       method: 'POST',
-      mode: 'no-cors',
+      mode: 'cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         name: d.name, phone: d.phone, email: d.email, org: d.org,
         who: d.who, interest: d.interest, message: d.message, source: location.href
       })
     });
+    const data = await res.json().catch(function(){ return {}; });
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || 'Сервер не подтвердил приём заявки');
+    }
     form.reset();
     btn.textContent = 'Заявка отправлена ✓';
     let xs = document.getElementById('xsell');
@@ -87,4 +91,5 @@ document.addEventListener('submit', async (e) => {
     btn.disabled = false;
     btn.textContent = oldText;
   }
+  
 });
