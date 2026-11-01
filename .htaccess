@@ -1,0 +1,4 @@
+# --- ZemOtdel: канонический редирект www -> без www (301) ---
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.zemotdel\.ru [NC]
+RewriteRule ^(.*)$ https://zemotdel.ru/$1 [R=301,L]

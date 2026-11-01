@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /crm/
+Disallow: /email/
+
+Sitemap: https://zemotdel.ru/sitemap.xml
